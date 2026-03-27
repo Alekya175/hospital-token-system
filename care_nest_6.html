@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Care Nest - Pastel & Live</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    /* 🎨 Pastel Color Palette */
+    :root {
+        --primary-soft: #79a7d3; /* Soft Sky Blue */
+        --secondary-mint: #a7d3a8; /* Soft Mint Green */
+        --accent-coral: #f3a992; /* Pale Coral */
+        --text-dark: #3a506b;
+        --bg-light: #f7f9fa;
+        --card-bg: #ffffff;
+    }
+
+    /* Global Styles */
+    body {
+        margin: 0;
+        font-family: 'Quicksand', sans-serif;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        overflow-x: hidden;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--primary-soft);
+        margin-top: 30px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+        color: var(--text-dark);
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #e0e7ee;
+        font-size: 1.5rem;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 480px;
+        margin: 25px auto;
+        padding: 35px;
+        background: var(--card-bg);
+        box-shadow: 0 10px 30px rgba(121, 167, 211, 0.2);
+        border-radius: 25px;
+        transition: transform 0.4s ease-out;
+    }
+
+    .container:hover {
+        transform: translateY(-8px);
+    }
+
+    /* Input, Select, Textarea Styles */
+    input[type="text"], input[type="number"], select, textarea {
+        width: 100%;
+        padding: 15px;
+        margin-top: 8px;
+        border: 1px solid #c5d0e3;
+        border-radius: 15px;
+        font-size: 16px;
+        color: var(--text-dark);
+        outline: none;
+        transition: all 0.3s;
+        box-sizing: border-box;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--primary-soft);
+        box-shadow: 0 0 10px rgba(121, 167, 211, 0.4);
+    }
+
+    /* Button Styles */
+    button {
+        width: 100%;
+        padding: 16px;
+        margin-top: 25px;
+        border: none;
+        border-radius: 15px;
+        /* Pastel Gradient */
+        background: linear-gradient(135deg, var(--secondary-mint), #8cbf8e); 
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s, transform 0.1s;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(167, 211, 168, 0.5);
+    }
+
+    button:hover {
+        background: linear-gradient(135deg, #8cbf8e, var(--secondary-mint));
+        transform: translateY(-2px);
+    }
+    
+    /* Toggle Switch (Emergency) Styling */
+    .toggle-switch {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        padding: 10px 0;
+    }
+    .toggle-text {
+        margin-left: 15px;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+    .toggle-switch input[type="checkbox"] { opacity: 0; width: 0; height: 0; }
+    .toggle-label { width: 50px; height: 26px; background-color: #ccc; border-radius: 15px; position: relative; cursor: pointer; transition: background-color 0.3s; }
+    .toggle-label::after { content: ''; position: absolute; width: 20px; height: 20px; border-radius: 50%; background-color: white; top: 3px; left: 3px; transition: transform 0.3s; }
+    .toggle-switch input:checked + .toggle-label { background-color: var(--accent-coral); }
+    .toggle-switch input:checked + .toggle-label::after { transform: translateX(24px); }
+
+
+    /* Page Transitions */
+    .page { 
+        display: none; 
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+    .active { 
+        display: block; 
+        opacity: 1;
+    }
+
+    /* Card Styles - Enhanced with Pastel Tones and Soft Shadows */
+    .card {
+        padding: 25px;
+        margin-top: 20px;
+        border-radius: 20px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.4s ease-in-out;
+        line-height: 1.6;
+    }
+
+    .card:hover { transform: scale(1.03); }
+
+    /* Pastel Card Colors */
+    .card.waiting { 
+        background: linear-gradient(135deg, #ffe0b2, #ffcc80); /* Soft Peach */
+        color: var(--text-dark);
+        box-shadow: 0 6px 20px rgba(255, 171, 64, 0.2);
+    }
+    .card.doctors { 
+        background: linear-gradient(135deg, #b3e5fc, #81d4fa); /* Soft Aqua Blue */
+        color: var(--text-dark);
+        box-shadow: 0 6px 20px rgba(129, 212, 250, 0.3);
+    }
+    .card.beds { 
+        background: linear-gradient(135deg, #c8e6c9, #a5d6a7); /* Soft Mint Green */
+        color: var(--text-dark);
+        box-shadow: 0 6px 20px rgba(165, 214, 167, 0.3);
+    }
+
+    /* Badge/Stat Styles - More subtle */
+    .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        background: rgba(255,255,255,0.7); 
+        color: var(--text-dark); 
+        margin-right: 8px;
+        margin-top: 8px;
+        white-space: nowrap;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-dark);
+    }
+
+    /* Quote Styles */
+    .quote {
+        font-style: italic;
+        color: #90a4ae;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        border-top: 1px dashed #e0e7ee;
+    }
+    
+    /* Appointment Summary Box */
+    .summary-box {
+        background: #eef7ff; 
+        border: 1px solid #cce0f5;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        font-size: 0.95rem;
+    }
+    .summary-box b {
+        color: var(--primary-soft);
+        font-weight: 700;
+    }
+
+    /* Live Queue Counter */
+    #liveQueue {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--accent-coral);
+        display: inline-block;
+        min-width: 40px;
+        text-align: center;
+        transition: all 0.5s ease-in-out;
+    }
+
+    /* Token Page Enhancement */
+    #finalToken {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--accent-coral);
+        padding: 20px;
+        margin: 20px 0;
+        border: 5px solid var(--accent-coral);
+        background-color: #fff3e0;
+        text-align: center;
+        letter-spacing: 5px;
+        border-radius: 15px;
+        animation: pulse 1s infinite alternate;
+    }
+    @keyframes pulse {
+        from { transform: scale(1); box-shadow: 0 0 15px rgba(243, 169, 146, 0.7); }
+        to { transform: scale(1.02); box-shadow: 0 0 25px rgba(243, 169, 146, 0.9); }
+    }
+    
+    #smsConfirmation {
+        background-color: #e8f5e9;
+        color: #4caf50;
+        padding: 15px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+        border: 1px solid #c8e6c9;
+    }
+</style>
+</head>
+<body>
+
+<script>
+let globalData = {
+    name: "",
+    contact: "",
+    age: "",
+    symptoms: "",
+    location: "",
+    apptTime: "",
+    insurance: "",
+    emergency: false,
+    token: "",
+    doctor: ""
+};
+let liveQueueInterval;
+
+// Doctor List with specialties and time slots
+const AVAILABLE_DOCTORS = [
+    { name: "Dr. Meera", specialty: "Cardiology", time: "Morning (9AM - 12PM)" },
+    { name: "Dr. Arjun", specialty: "General Practice", time: "Noon (12PM - 4PM)" },
+    { name: "Dr. Kavya", specialty: "Neurology", time: "Evening (4PM - 8PM)" },
+    { name: "Dr. Lokesh", specialty: "Pediatrics", time: "Morning (9AM - 12PM)" },
+    { name: "Dr. Shreya", specialty: "Dermatology", time: "Noon (12PM - 4PM)" },
+    { name: "Dr. Vikram", specialty: "Orthopedics", time: "Evening (4PM - 8PM)" },
+];
+
+// Symptom Keyword Mapping to Specialty (Revised for effectiveness)
+const SYMPTOM_TO_SPECIALTY = {
+    'chest': ['Cardiology'],
+    'heart': ['Cardiology'],
+    'migraine': ['Neurology'],
+    'headache': ['Neurology'],
+    'skin': ['Dermatology'],
+    'rash': ['Dermatology'],
+    'cough': ['General Practice'],
+    'fever': ['General Practice', 'Pediatrics'],
+    'knee': ['Orthopedics'],
+    'joint': ['Orthopedics'],
+    'bone': ['Orthopedics'],
+    'child': ['Pediatrics'],
+    'baby': ['Pediatrics'],
+    'general': ['General Practice'], // Catch-all for basic symptoms
+};
+
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+// --- LOGIC FUNCTIONS ---
+
+function goToDetails() { 
+    const name = document.getElementById('name').value;
+    const contact = document.getElementById('contact').value;
+    
+    if (name.trim() === '' || contact.trim() === '') {
+        alert("Please enter your name and contact details to continue.");
+        return;
+    }
+    
+    globalData.name = name;
+    globalData.contact = contact;
+    
+    showPage('detailsPage'); 
+}
+
+function findHospitalAndGenerateToken() { 
+    const age = document.getElementById('age').value;
+    const symptoms = document.getElementById('symptoms').value;
+    const location = document.getElementById('location').value;
+    const apptTime = document.getElementById('apptTime').value;
+    const insurance = document.getElementById('insurance').value;
+    const emergency = document.getElementById('emergency').checked;
+    
+    if (age.trim() === '' || symptoms.trim() === '' || location.trim() === '') {
+        alert("Please fill in all patient details.");
+        return;
+    }
+    
+    // Store data
+    globalData.age = age;
+    globalData.symptoms = symptoms;
+    globalData.location = location;
+    globalData.apptTime = apptTime;
+    globalData.insurance = insurance;
+    globalData.emergency = emergency;
+    
+    // Generate Token (Priority Booking)
+    let tokenPrefix = emergency ? "CN-E" : "CN-R"; 
+    globalData.token = tokenPrefix + Math.floor(100 + Math.random()*900);
+
+    // Simulated SMS/WhatsApp message confirmation
+    const smsMessage = `✅ Priority Token ${globalData.token} CONFIRMED! We have sent this token to <strong>${globalData.contact}</strong>. Please review the live hospital status.`;
+    document.getElementById('smsConfirmation').innerHTML = smsMessage;
+    
+    // Update Hospital Page elements before transition
+    updateHospitalSummary();
+    filterDoctors(globalData.symptoms, globalData.apptTime); // PASS SYMPTOMS HERE
+    startLiveQueue();
+
+    showPage('hospitalPage'); 
+}
+
+function updateHospitalSummary() {
+    const summaryHtml = `
+        <p><b>Name:</b> ${globalData.name}</p>
+        <p><b>Issue:</b> ${globalData.symptoms}</p>
+        <p><b>Location:</b> ${globalData.location}</p>
+        <p><b>Time:</b> ${globalData.apptTime}</p>
+        <p><b>Status:</b> ${globalData.emergency ? '<span style="color: red;">🚨 EMERGENCY</span>' : 'Regular'}</p>
+    `;
+    document.getElementById('appointmentSummary').innerHTML = summaryHtml;
+}
+
+// Feature: Doctor filter based on SYMPTOMS and Time (Updated Logic)
+function filterDoctors(symptoms, time) {
+    const select = document.getElementById('doctorSelect');
+    select.innerHTML = ''; // Clear previous options
+    
+    const symptomsLower = symptoms.toLowerCase();
+    let requiredSpecialties = new Set();
+    const timeKeyword = time.split(' ')[0]; // Extract 'Morning', 'Noon', or 'Evening'
+
+    // 1. Determine required specialties based on symptoms
+    for (const keyword in SYMPTOM_TO_SPECIALTY) {
+        if (symptomsLower.includes(keyword)) {
+            SYMPTOM_TO_SPECIALTY[keyword].forEach(spec => requiredSpecialties.add(spec));
+        }
+    }
+    
+    // Default to General Practice if no specific match
+    if (requiredSpecialties.size === 0) {
+        requiredSpecialties.add('General Practice');
+        select.add(new Option(`(Recommendation: General Practice - No specific match found)`, 'General Practice'));
+    }
+
+    // 2. Filter doctors by required specialty AND preferred time
+    let filtered = AVAILABLE_DOCTORS.filter(doc => 
+        requiredSpecialties.has(doc.specialty) && doc.time.includes(timeKeyword)
+    );
+    
+    // 3. Populate Select dropdown
+    if (filtered.length === 0) {
+        select.add(new Option(`(No specialist found for symptoms and ${timeKeyword} slot. Showing all.)`, 'No Doctor'));
+        // Fallback: Show all doctors available at that time
+        AVAILABLE_DOCTORS.filter(doc => doc.time.includes(timeKeyword)).forEach(doc => {
+            select.add(new Option(`${doc.name} (${doc.specialty})`, `${doc.name} (${doc.specialty})`));
+        });
+    } else {
+        filtered.forEach(doc => {
+            select.add(new Option(`${doc.name} (${doc.specialty})`, `${doc.name} (${doc.specialty})`));
+        });
+    }
+}
+
+// Feature: Simulated Live Queue Update
+function startLiveQueue() {
+    clearInterval(liveQueueInterval); // Clear any existing interval
+    let currentQueue = 7; // Initial number
+    document.getElementById('liveQueue').innerText = currentQueue;
+    
+    liveQueueInterval = setInterval(() => {
+        // Queue randomly fluctuates between 5 and 10
+        let change = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+        currentQueue = Math.max(5, currentQueue + change); // Keep minimum at 5
+        
+        document.getElementById('liveQueue').innerText = currentQueue;
+        // Optionally flash the text slightly to indicate a change
+        document.getElementById('liveQueue').style.opacity = 0.5;
+        setTimeout(() => document.getElementById('liveQueue').style.opacity = 1, 100);
+        
+    }, 5000); // Update every 5 seconds
+}
+
+
+function finalizeAppointment() {
+    const doctor = document.getElementById('doctorSelect').value;
+    globalData.doctor = doctor;
+    
+    // Stop the live queue updates
+    clearInterval(liveQueueInterval); 
+
+    // Update Token Page details
+    document.getElementById('finalDoctor').innerText = globalData.doctor;
+    document.getElementById('finalToken').innerText = globalData.token;
+    document.getElementById('finalTime').innerText = globalData.apptTime;
+    
+    // NEW FEATURE: Provide only the number/contact entered
+    document.getElementById('finalContactNumber').innerText = globalData.contact;
+    
+    showPage('tokenPage');
+}
+
+// Initial setup of toggle switch
+document.addEventListener('DOMContentLoaded', () => {
+    showPage('loginPage'); 
+});
+
+</script>
+
+<div id="loginPage" class="page active">
+    <h1>Care Nest</h1>
+    <div class="container">
+        <h2>✨ Welcome to Better Health</h2>
+        <label>Full Name</label>
+        <input id="name" type="text" placeholder="Enter your full name">
+
+        <label>Mobile Number (For Token SMS) / Email</label>
+        <input id="contact" type="text" placeholder="Enter mobile or email">
+
+        <button onclick="goToDetails()">Next: Enter Patient Details</button>
+        <p class="quote">“Your journey to wellness starts here.”</p>
+    </div>
+</div>
+
+<div id="detailsPage" class="page">
+    <h1>Patient Details</h1>
+    <div class="container">
+        <h2>📝 Your Health Profile</h2>
+        
+        <label>Age</label>
+        <input id="age" type="number" placeholder="Enter patient age">
+
+        <label>Primary Symptoms</label>
+        <textarea id="symptoms" placeholder="Describe your main symptoms (e.g., severe migraine, persistent cough, knee injury)" rows="3"></textarea>
+        
+        <label>Insurance Provider</label>
+        <select id="insurance">
+            <option>Self-Pay / None</option>
+            <option>MediCare Plus (Approved)</option>
+            <option>Health Shield (Pending)</option>
+            <option>Company Insurance</option>
+        </select>
+        
+        <label>Preferred Appointment Time</label>
+        <select id="apptTime">
+            <option>Morning (9AM - 12PM)</option>
+            <option>Noon (12PM - 4PM)</option>
+            <option>Evening (4PM - 8PM)</option>
+        </select>
+
+        <label>Location / Area</label>
+        <input id="location" type="text" placeholder="Enter your city or area for hospital search">
+
+        <label style="margin-top: 30px;">🚨 Emergency Flag</label>
+        <div class="toggle-switch">
+            <input type="checkbox" id="emergency">
+            <label for="emergency" class="toggle-label"></label>
+            <span class="toggle-text">Flag as **URGENT** for prioritization</span>
+        </div>
+        
+        <button onclick="findHospitalAndGenerateToken()">Search & Get Token</button>
+        <p class="quote">“Health is not about the body you have, but the care you take.”</p>
+    </div>
+</div>
+
+<div id="hospitalPage" class="page">
+    <h1>Hospital Live Status</h1>
+    <div class="container">
+        <div id="smsConfirmation"></div>
+
+        <h2>Summary: <span style="color: var(--primary-soft);" id="patientNameSummary">${globalData.name || 'Patient'}</span></h2>
+        <div class="summary-box" id="appointmentSummary">
+            </div>
+
+        <h2 style="margin-top: 30px;">Queue & Doctor Availability</h2>
+        
+        <div class="card waiting">
+            <div class="card-title">⏳ Waiting Queue</div>
+            <p>
+                <b>People in Queue:</b> <span id="liveQueue">7</span> <span style="font-size: 14px;">(Updating Live...)</span><br>
+                <b>Estimated Wait Time:</b> <span class="badge">~ 20 minutes</span>
+            </p>
+        </div>
+
+        <div class="card doctors">
+            <div class="card-title">👨‍⚕️ Specialist Availability</div>
+            <p>
+                *Note: Doctors shown below are filtered based on your **<span style="font-weight: bold; color: var(--text-dark);">Symptoms</span>** and **Time**.*
+            </p>
+            <p>
+                <span class="badge">Specialists: Cardiology, General, Pediatrics, etc.</span>
+            </p>
+        </div>
+
+        <div class="card beds">
+            <div class="card-title">🛏️ Critical Resources</div>
+            <p>
+                <b>General Beds:</b> <span class="badge">12 Available</span><br>
+                <b>ICU Status:</b> <span class="badge">2 Beds Available</span>
+            </p>
+        </div>
+
+        <label>Choose Your Doctor (Filtered by Symptoms & Time)</label>
+        <select id="doctorSelect">
+            </select>
+
+        <button onclick="finalizeAppointment()">Confirm Doctor & Book</button>
+        <p class="quote">“We match you with the best available care based on your need and urgency.”</p>
+    </div>
+</div>
+
+<div id="tokenPage" class="page">
+    <h1>Booking Success!</h1>
+    <div class="container">
+        <h2 style="text-align: center; color: var(--secondary-mint);">🎉 Appointment Confirmed</h2>
+        
+        <div id="finalToken">
+            </div>
+        
+        <div class="summary-box" style="background: #e8f5e9; border-color: #c8e6c9;">
+            <p><b>Your Doctor:</b> <span id="finalDoctor" style="font-weight: 700;"></span></p>
+            <p><b>Appointment Slot:</b> <span id="finalTime"></span></p>
+            <p><b>Your Contact:</b> <span id="finalContactNumber" style="font-weight: 700;"></span></p> 
+        </div>
+        
+        <p class="quote">“Thank you for choosing Care Nest. Your health records are ready for your visit.”</p>
+    </div>
+</div>
+
+</body>
+</html>
